@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { add, remove, update } from './store/formaSlice'
+import { add, clear, remove, update } from './store/formaSlice'
 
 const App = () => {
   const { value } = useSelector(state => state.form)
@@ -10,34 +10,55 @@ const App = () => {
   const emailRef = useRef()
   const formRef = useRef()
 
-
   function hendelAdd(e) {
     e.preventDefault()
+  
+    const username = usernameRef.current.value;
+    const email = emailRef.current.value;
+  
+    if (username.length < 3) {
+      alert('Ism kamida 3ta harfdan iborat bo\'lishi kerak');
+      return;
+    }
+  
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert('Email manzili noto\'g\'ri');
+      return;
+    }
+  
     const user = {
       id: Date.now(),
-      name: usernameRef.current.value,
-      email: emailRef.current.value,
+      name: username,
+      email: email,
       age: ageRef.current.value
     }
+  
     dispatch(add(user))
     formRef.current.reset()
   }
+  
 
   function hendleDelete(id) {
     dispatch(remove(id))
   }
 
-  function hendleUpdateAge(value){
-    let updateName = prompt('Ismingizni kiriting',value.name)
-    let updateAge = prompt('Yoshingizni kiriting',value.age)
+  function hendleUpdateAge(value) {
+    let updateName = prompt('Ismingizni kiriting', value.name)
+    let updateAge = prompt('Yoshingizni kiriting', value.age)
 
     let user = {
       name: updateName,
       email: value.email,
       id: value.id,
-      age:updateAge
+      age: updateAge
     }
     dispatch(update(user))
+  }
+
+  function hendleClear(e) {
+    e.preventDefault()
+    dispatch(clear())
   }
 
   return (
@@ -59,7 +80,7 @@ const App = () => {
         <button onClick={hendelAdd} className='bg-blue-600 text-white text-xl py-2 w-full rounded-xl hover:bg-blue-800 mt-3'>Add</button>
       </form>
 
-      <div className='flex gap-5'>
+      <div className='flex flex-wrap gap-5'>
         {
           value.length > 0 && value.map((value, index) => {
             return (
@@ -68,13 +89,17 @@ const App = () => {
                   <h3>{value.name}</h3>
                   <h2>{value.age}</h2>
                   <h3>{value.email}</h3>
-                  <button onClick={()=> {hendleUpdateAge(value)}} className='capitalize bg-yellow-500 py-2 rounded-md text-white'>edit</button>
+                  <button onClick={() => { hendleUpdateAge(value) }} className='capitalize bg-yellow-500 py-2 rounded-md text-white'>edit</button>
                   <button onClick={() => { hendleDelete(value.id) }} className='capitalize bg-red-500 py-2 rounded-md text-white'>delete</button>
                 </div>
               </div>
             )
           })
         }
+      </div>
+
+      <div className='text-center my-10'>
+        <button onClick={hendleClear} className='w-36 text-2xl capitalize bg-red-500 py-2 rounded-md text-white'>clear</button>
       </div>
     </div>
   )
