@@ -12,32 +12,32 @@ const App = () => {
 
   function hendelAdd(e) {
     e.preventDefault()
-  
+
     const username = usernameRef.current.value;
     const email = emailRef.current.value;
-  
+
     if (username.length < 3) {
       alert('Ism kamida 3ta harfdan iborat bo\'lishi kerak');
       return;
     }
-  
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       alert('Email manzili noto\'g\'ri');
       return;
     }
-  
+
     const user = {
       id: Date.now(),
       name: username,
       email: email,
       age: ageRef.current.value
     }
-  
+
     dispatch(add(user))
     formRef.current.reset()
   }
-  
+
 
   function hendleDelete(id) {
     dispatch(remove(id))
@@ -99,7 +99,10 @@ const App = () => {
       </div>
 
       <div className='text-center my-10'>
-        <button onClick={hendleClear} className='w-36 text-2xl capitalize bg-red-500 py-2 rounded-md text-white'>clear</button>
+        {
+          value.length > 0 &&
+          <button onClick={hendleClear} className='w-36 text-2xl capitalize bg-red-500 py-2 rounded-md text-white'>clear</button>
+        }
       </div>
     </div>
   )
